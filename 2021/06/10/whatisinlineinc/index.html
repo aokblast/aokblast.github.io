@@ -28,9 +28,10 @@
 <meta property="og:description" content="| Reference: http:&#x2F;&#x2F;www.greenend.org.uk&#x2F;rjk&#x2F;tech&#x2F;inline.html Recently, many friends ask me what the keyword “inline” means in C and if it is necessary to be a static function when we put inline in the">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2021-06-10T14:59:42.000Z">
-<meta property="article:modified_time" content="2021-06-10T18:02:16.537Z">
+<meta property="article:modified_time" content="2021-06-10T18:09:08.177Z">
 <meta property="article:author" content="AoK_Blast">
-<meta property="article:tag" content="C languague, Compiler">
+<meta property="article:tag" content="C languague">
+<meta property="article:tag" content="Compiler">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://aokblast.github.io/2021/06/10/whatisinlineinc/">
@@ -196,8 +197,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-06-11 02:02:16" itemprop="dateModified" datetime="2021-06-11T02:02:16+08:00">2021-06-11</time>
+                <time title="Modified: 2021-06-11 02:09:08" itemprop="dateModified" datetime="2021-06-11T02:09:08+08:00">2021-06-11</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Programming-Language/" itemprop="url" rel="index"><span itemprop="name">Programming Language</span></a>
+                </span>
+            </span>
 
           
 
@@ -218,7 +228,8 @@
 <li>inline</li>
 <li>extern inline</li>
 </ol>
-<h2 id="What-is-the-target-inline-wants-to-achieve"><a href="#What-is-the-target-inline-wants-to-achieve" class="headerlink" title="What is the target inline wants to achieve"></a>What is the target inline wants to achieve</h2><p>As we know, every time when we call a function, it takes effort for the computer to do some preparation(like push some registers’ status to the stack) which is sometimes unnecessary and cause performance issue.<br>Therefore, to solve this problem, GNU C introduce a keyword “inline” to <em>suggest</em> compiler to expand the whole function on the location where it was called.<br>Namely, the function which is successfully <em>inlined</em> don’t make extra preparation to execute.<br>There are two versions of a function two show how inline work:</p>
+<h2 id="What-is-the-target-inline-wants-to-achieve"><a href="#What-is-the-target-inline-wants-to-achieve" class="headerlink" title="What is the target inline wants to achieve"></a>What is the target inline wants to achieve</h2><p>As we know, every time when we call a function, it takes effort for the computer to do some preparation(like push some registers’ status to the stack) which is sometimes unnecessary and cause performance issue.<br>Therefore, to solve this problem, GNU C introduce a keyword “inline” to <em>suggest</em> compiler to expand the whole function on the location where it was called.<br>Namely, the function which is successfully <em>inlined</em> don’t have to make redundant preparation to execute.<br>There are two versions of a function show how inline work:</p>
+<p>As we can see, the first one does function call(line 6) but the second doesn’t.</p>
 <ol>
 <li>Normal Function:</li>
 </ol>
@@ -236,7 +247,6 @@
 <p>Assembly:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">0x0000000000001139 &lt;+0&gt;:	push   %rbp</span><br><span class="line">0x000000000000113a &lt;+1&gt;:	mov    %rsp,%rbp</span><br><span class="line">0x000000000000113d &lt;+4&gt;:	sub    $0x10,%rsp</span><br><span class="line">0x0000000000001141 &lt;+8&gt;:	movl   $0x5,-0x8(%rbp)</span><br><span class="line">0x0000000000001148 &lt;+15&gt;:movl   $0x3,-0x4(%rbp)</span><br><span class="line">0x000000000000114f &lt;+22&gt;:mov    -0x8(%rbp),%edx</span><br><span class="line">0x0000000000001152 &lt;+25&gt;:mov    -0x4(%rbp),%eax</span><br><span class="line">0x0000000000001155 &lt;+28&gt;:add    %edx,%eax</span><br><span class="line">0x0000000000001157 &lt;+30&gt;:mov    %eax,-0xc(%rbp)</span><br><span class="line">0x000000000000115a &lt;+33&gt;:mov    -0xc(%rbp),%eax</span><br><span class="line">0x000000000000115d &lt;+36&gt;:mov    %eax,%esi</span><br><span class="line">0x000000000000115f &lt;+38&gt;:lea    0xe9e(%rip),%rax        # 0x2004</span><br><span class="line">0x0000000000001166 &lt;+45&gt;:mov    %rax,%rdi</span><br><span class="line">0x0000000000001169 &lt;+48&gt;:mov    $0x0,%eax</span><br><span class="line">0x000000000000116e &lt;+53&gt;:call   0x1030 &lt;printf@plt&gt;</span><br><span class="line">0x0000000000001173 &lt;+58&gt;:mov    $0x0,%eax</span><br><span class="line">0x0000000000001178 &lt;+63&gt;:leave  </span><br><span class="line">0x0000000000001179 &lt;+64&gt;:ret  </span><br></pre></td></tr></table></figure>
 
-<p>As we can see, the first one does function call but the second doesn’t.</p>
 <h2 id="When-a-inline-function-actually-not-inline"><a href="#When-a-inline-function-actually-not-inline" class="headerlink" title="When a inline function actually not inline"></a>When a inline function actually not inline</h2><p>It determine if the compiler expand the code directly.</p>
 <ol>
 <li>Waste space</li>
@@ -253,7 +263,7 @@
 <li>inline(Act like extern inline of Standard C):<br> It always generate assembly code for the function to make other c source file can call.(Function call in other source will not be inlined)<br> GCC will inlined the function if it can, if cannot, call the original function.</li>
 <li>extern inline(Act like inline of Standard C):<br> Compiler always not generate assembly code for the function and expand all of the function call.</li>
 </ol>
-<h2 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h2><p>I really do some experiment but I won’t show the result one by one, Because in different optimizing flag and different method to use inline may cause different result. </p>
+<h2 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h2><p>I really do some experiment but I won’t show the result one by one. Because in different optimizing flag and different method to use inline may cause different result. </p>
 <p>Sometimes compiler may not generate assembly code when analyzing a function but when the function was called, compiler doesn’t think it can be inlined and discovered that the function cannot be called. Therefore, it cause compile error because compiler cannot find the function reference.</p>
 <p>If you are interesting in this, you can perform experiment by yourself with different optimizing flag and different method. </p>
 
@@ -265,7 +275,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/C-languague-Compiler/" rel="tag"># C languague, Compiler</a>
+              <a href="/tags/C-languague/" rel="tag"># C languague</a>
+              <a href="/tags/Compiler/" rel="tag"># Compiler</a>
           </div>
 
         
@@ -354,10 +365,16 @@
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
